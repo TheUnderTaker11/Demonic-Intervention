@@ -7,6 +7,8 @@ import java.util.List;
 import com.theundertaker11.demonicintervention.infusions.InfusionNoFallDamage;
 import com.theundertaker11.demonicintervention.infusions.InfusionVampirism;
 
+import net.minecraft.client.resources.I18n;
+
 public class InfusionRegistry {
 	/**Quick access map of all infusion, infusion ID is the key to get the infusion object */
 	public static HashMap infusionMap = new HashMap();
@@ -18,8 +20,8 @@ public class InfusionRegistry {
 	
 	public static void init()
 	{
-		vampirism = registerInfusion(new InfusionVampirism("Curse of Vampirism"));
-		noFallDamage = registerInfusion(new  InfusionNoFallDamage("Infusion of the Feather", false));
+		vampirism = registerInfusion(new InfusionVampirism(I18n.format("infusion.vampirism.name")));
+		noFallDamage = registerInfusion(new  InfusionNoFallDamage(I18n.format("infusion.nofalldamage.name"), false));
 	}
 	/**
 	 * To register an infusion, declare a static Infusion, then set that equal to this method with a new instantiation of your class

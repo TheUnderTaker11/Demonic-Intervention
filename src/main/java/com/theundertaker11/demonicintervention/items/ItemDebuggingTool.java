@@ -8,6 +8,7 @@ import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
 import com.theundertaker11.demonicintervention.capability.infusions.IInfusions;
 import com.theundertaker11.demonicintervention.util.ModUtils;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -67,7 +68,7 @@ public class ItemDebuggingTool extends BaseItem {
 		int id = nextInfusionIDForDebugging(tag.getInteger(InfusionNBTID));
 		
 		tag.setInteger(InfusionNBTID, id);
-		player.addChatMessage(new TextComponentString("Infusion Set: "+InfusionUtils.getInfusionFromID(id).getNameForShow()));
+		player.addChatMessage(new TextComponentString(I18n.format("misc.infusionset.name")+": "+InfusionUtils.getInfusionFromID(id).getNameForShow()));
 	}
 	
 	public static void toggleSelectedInfusion(ItemStack stack, EntityPlayer player)
@@ -83,12 +84,12 @@ public class ItemDebuggingTool extends BaseItem {
 				if(infusions.hasInfusion(itemsInfusion))
 				{
 					infusions.removeInfusion(itemsInfusion);
-					player.addChatMessage(new TextComponentString("Removed: "+itemsInfusion.getNameForShow()));
+					player.addChatMessage(new TextComponentString(I18n.format("misc.removed.name")+": "+itemsInfusion.getNameForShow()));
 				}
 				else
 				{
 					infusions.addInfusion(itemsInfusion);
-					player.addChatMessage(new TextComponentString("Added: "+itemsInfusion.getNameForShow()));
+					player.addChatMessage(new TextComponentString(I18n.format("misc.added.name")+": "+itemsInfusion.getNameForShow()));
 				}
 			}
 		}

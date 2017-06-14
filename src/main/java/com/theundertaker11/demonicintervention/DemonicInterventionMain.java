@@ -1,10 +1,12 @@
 package com.theundertaker11.demonicintervention;
 
 import com.theundertaker11.demonicintervention.api.infusion.InfusionRegistry;
+import com.theundertaker11.demonicintervention.blocks.BlockRegistry;
 import com.theundertaker11.demonicintervention.capability.CapabilityHandler;
 import com.theundertaker11.demonicintervention.event.EventRegistry;
 import com.theundertaker11.demonicintervention.items.ItemRegistry;
 import com.theundertaker11.demonicintervention.proxy.CommonProxy;
+import com.theundertaker11.demonicintervention.tile.TileEntityRegistry;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -33,12 +35,14 @@ public class DemonicInterventionMain
 		DIConfig.init(config);
 		InfusionRegistry.init();
 		ItemRegistry.init();
-		
+		BlockRegistry.init();
+		TileEntityRegistry.init();
     }
 	
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+    	proxy.registerRenders();;
     	CapabilityHandler.init();
     	EventRegistry.init();
     }

@@ -1,3 +1,16 @@
 itemGroup.DICreativeTab=Demonic Intervention
 
+#Items
 item.debuggingtool.name=Debugging Tool
+
+#Infusions
+infusion.vampirism.name=Curse of Vampirism
+infusion.nofalldamage.name=Infusion of the Feather
+
+#Misc Terms
+misc.added.name=Added
+misc.removed.name=Removed
+misc.infusionset.name=Infusion Set
+
+#Blocks
+tile.pedestal.name=Demonic Pedestal

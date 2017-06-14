@@ -60,6 +60,12 @@ public class ModUtils{
 		else 
 			return false;
 	}
+	
+	public static ItemStack setStackEmpty(ItemStack stack)
+	{
+		stack = null;
+		return stack;
+	}
 	/**
 	 * Teleports a player, given the x, y, z, and dimension ID.
 	 * Works cross-dimensionally(Hence needing dimension ID)
