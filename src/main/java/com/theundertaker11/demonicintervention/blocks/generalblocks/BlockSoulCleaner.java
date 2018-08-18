@@ -2,7 +2,9 @@ package com.theundertaker11.demonicintervention.blocks.generalblocks;
 
 import javax.annotation.Nullable;
 
+import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
 import com.theundertaker11.demonicintervention.blocks.BaseBlock;
+import com.theundertaker11.demonicintervention.capability.infusions.IInfusions;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +23,7 @@ public class BlockSoulCleaner extends BaseBlock {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
 	{
 		if(worldIn.isRemote) return true;
 		
@@ -31,6 +33,15 @@ public class BlockSoulCleaner extends BaseBlock {
 	
 	public static void clearPlayerInfusions(EntityPlayer player)
 	{
-		player.addChatMessage(new TextComponentString("Removed all infusions and curses"));
+		IInfusions infusions = InfusionUtils.getIInfusions(player);
+		if(infusions!=null)
+		{
+			infusions.removeAllInfusions();
+			player.sendMessage(new TextComponentString("Removed all infusions and curses."));
+		}
+		else {
+			player.sendMessage(new TextComponentString("There was no existing infusions or curses."));
+		}
+		
 	}
 }

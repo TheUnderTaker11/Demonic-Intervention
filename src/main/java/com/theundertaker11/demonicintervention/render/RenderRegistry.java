@@ -3,12 +3,13 @@ package com.theundertaker11.demonicintervention.render;
 import com.theundertaker11.demonicintervention.Reference;
 import com.theundertaker11.demonicintervention.blocks.pedestal.TilePedestal;
 import com.theundertaker11.demonicintervention.blocks.pedestal.TilePedestalRender;
+import com.theundertaker11.demonicintervention.blocks.ritualmainblock.TileRitualMain;
+import com.theundertaker11.demonicintervention.blocks.ritualmainblock.TileRitualMainRender;
+import com.theundertaker11.demonicintervention.init.ItemRegistry;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -19,22 +20,25 @@ public class RenderRegistry {
 	@SideOnly(Side.CLIENT)
 	public static void render()
 	{
-		//If you register a new texture for the same item you have to make another thing in ClientProxy!
 		ClientRegistry.bindTileEntitySpecialRenderer(TilePedestal.class, new TilePedestalRender());
+		ClientRegistry.bindTileEntitySpecialRenderer(TileRitualMain.class, new TileRitualMainRender());
+		
+		//If you register a new texture for the same item you have to make another thing in ClientProxy!
+		regWithMetaAndName(ItemRegistry.essence, 1, "essence2");
 	}
 
 	public static void reg(Item item) {
-	    Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
-	    .register(item, 0, new ModelResourceLocation(Reference.MODID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+		ModelResourceLocation res = new ModelResourceLocation(item.getRegistryName().toString(), "inventory");
+		ModelLoader.setCustomModelResourceLocation(item, 0, res);
 	}
 
 	public static void regWithMeta(Item item, int meta) {
-	    Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
-	    .register(item, meta, new ModelResourceLocation(Reference.MODID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+		ModelResourceLocation res = new ModelResourceLocation(Reference.MODID + ":" + item.getUnlocalizedName().substring(5), "inventory");
+		ModelLoader.setCustomModelResourceLocation(item, meta, res);
 	}
-	
+
 	public static void regWithMetaAndName(Item item, int meta, String name) {
-	    Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
-	    .register(item, meta, new ModelResourceLocation(Reference.MODID + ":" + name, "inventory"));
+		ModelResourceLocation res = new ModelResourceLocation(Reference.MODID + ":" + name, "inventory");
+		ModelLoader.setCustomModelResourceLocation(item, meta, res);
 	}
 }

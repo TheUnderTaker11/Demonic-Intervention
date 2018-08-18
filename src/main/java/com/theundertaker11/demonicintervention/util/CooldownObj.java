@@ -1,23 +1,21 @@
 package com.theundertaker11.demonicintervention.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.entity.EntityLivingBase;
+import java.util.UUID;
 /**
  * This class is used to add cooldowns to entities. It doesn't handle any of it,
- * just is an object that can be used
- *
+ * just is an object that can be used. <p>
+ * 
+ * The main event handler is what counts down each of these objects put in the list in ModUtils class
  * @author TheUnderTaker11
  *
  */
 public class CooldownObj {
 	
-	private String ID;
+	private UUID ID;
 	private int ticksLeft;
 	private String CooldownName;
 	
-	public CooldownObj(String id, String cooldownName, int ticks)
+	public CooldownObj(UUID id, String cooldownName, int ticks)
 	{
 		this.ID=id;
 		this.ticksLeft=ticks;
@@ -39,8 +37,11 @@ public class CooldownObj {
 	{
 		return (this.ticksLeft<=0);
 	}
-	public String getID()
+	public UUID getID()
 	{
 		return this.ID;
+	}
+	public String getName() {
+		return this.CooldownName;
 	}
 }

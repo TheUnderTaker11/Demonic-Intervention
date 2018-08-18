@@ -2,7 +2,7 @@ package com.theundertaker11.demonicintervention;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -15,8 +15,8 @@ public class DICreativeTab extends CreativeTabs
 
     @Override
     @SideOnly(Side.CLIENT)
-    public Item getTabIconItem()
+    public ItemStack getTabIconItem()
     {
-        return Items.ENDER_EYE;
+        return new ItemStack(Items.ENDER_EYE);
     }
 }

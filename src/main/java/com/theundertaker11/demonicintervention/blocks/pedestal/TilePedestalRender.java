@@ -13,11 +13,11 @@ import net.minecraftforge.items.IItemHandler;
 public class TilePedestalRender extends TileEntitySpecialRenderer<TilePedestal>{
 	
 	@Override
-	public void renderTileEntityAt(TilePedestal te, double x, double y, double z, float partialTick, int destroyStage)
+	public void render(TilePedestal te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
 	{
 		ItemStack stack = te.getStoredStack();
 		//Keeps seeing the itemstack is null. (That's all the method does is a null check)
-		if(ModUtils.isStackEmpty(stack))
+		if(stack.isEmpty())
 		{
 			return;
 		}
@@ -25,7 +25,7 @@ public class TilePedestalRender extends TileEntitySpecialRenderer<TilePedestal>{
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(x, y, z);
 		GlStateManager.translate(0.5, 1.06, 0.5);
-		float angle = (((float)te.getWorld().getTotalWorldTime() + partialTick) / 20.0F) * (180F / (float)Math.PI);
+		float angle = (((float)te.getWorld().getTotalWorldTime() + partialTicks) / 20.0F) * (180F / (float)Math.PI);
 		GlStateManager.rotate(angle, 0, 1, 0);
 		Minecraft.getMinecraft().getRenderItem().renderItem(stack, TransformType.GROUND);
 		GlStateManager.popMatrix();

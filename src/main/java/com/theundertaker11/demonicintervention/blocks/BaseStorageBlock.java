@@ -11,7 +11,6 @@ public abstract class BaseStorageBlock extends BaseBlock
     public BaseStorageBlock(String name, Material mat, float hardness, float resistance)
 	{
 		super(name, mat, hardness, resistance);
-		isBlockContainer = true;
 	}
 
     public BaseStorageBlock(String name)

@@ -1,14 +1,14 @@
 [
 {
-  "modid": "demonicintervention",
-  "name": "Demonic Intervention",
-  "description": "A magic mod about giving yourself abilities at a price"
-  "version": "${0.1}",
-  "mcversion": "${1.10.2}",
+  "modid": "examplemod",
+  "name": "Example Mod",
+  "description": "Example placeholder mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["TheUnderTaker11"],
-  "credits": "ModDevCafe discord and the witchery mod for inspriation. Idea also came to me while watching Naruto, so him? A little? Eh.",
+  "authorList": ["ExampleDude"],
+  "credits": "The Forge and FML guys, for making this example",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

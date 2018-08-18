@@ -26,7 +26,6 @@ public class BlockPedestal extends ModelBlockBase{
 	public BlockPedestal(String name)
 	{
 		super(name);
-		this.isBlockContainer = true;
 	}
 
 	@Override
@@ -48,28 +47,31 @@ public class BlockPedestal extends ModelBlockBase{
     }
 	
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		//if(worldIn.isRemote) return true;
 		TileEntity tEntity = worldIn.getTileEntity(pos);
-		
 		if(tEntity!=null&&tEntity instanceof TilePedestal&&hand==EnumHand.MAIN_HAND)
 		{
 			TilePedestal tile = (TilePedestal)tEntity;
 			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			if(!ModUtils.isStackEmpty(heldItem))
+			if(!playerIn.getHeldItemMainhand().isEmpty())
 			{
-				if(ModUtils.isStackEmpty(inv.getStackInSlot(0)))
+				//Only the else is probably needed here to be honest :/
+				if(inv.getStackInSlot(0).isEmpty())
 				{
-					inv.insertItem(0, heldItem, false);
-					playerIn.setHeldItem(EnumHand.MAIN_HAND, ModUtils.setStackEmpty(heldItem));
+					inv.insertItem(0, playerIn.getHeldItemMainhand(), false);
+					playerIn.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					tile.markDirty();
+				}
+				else {
+					playerIn.setHeldItem(EnumHand.MAIN_HAND, inv.insertItem(0, playerIn.getHeldItemMainhand(), false));
 				}
 			}
 			else
 			{
-				if(!ModUtils.isStackEmpty(inv.getStackInSlot(0)))
+				if(!inv.getStackInSlot(0).isEmpty())
 				{
-					playerIn.setHeldItem(EnumHand.MAIN_HAND, inv.extractItem(0, inv.getStackInSlot(0).stackSize, false));
+					playerIn.setHeldItem(EnumHand.MAIN_HAND, inv.extractItem(0, inv.getStackInSlot(0).getCount(), false));
 					tile.markDirty();
 				}
 			}
@@ -90,7 +92,7 @@ public class BlockPedestal extends ModelBlockBase{
         	{
         		ItemStack inputstack = input.getStackInSlot(0);
         		EntityItem entityinput = new EntityItem(tileentity.getWorld(), tileentity.getPos().getX(), tileentity.getPos().getY(), tileentity.getPos().getZ(), inputstack);
-        		tileentity.getWorld().spawnEntityInWorld(entityinput);
+        		tileentity.getWorld().spawnEntity(entityinput);
         	}
         }
         super.breakBlock(worldIn, pos, state);

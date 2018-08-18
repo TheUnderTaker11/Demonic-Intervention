@@ -1,10 +1,13 @@
 package com.theundertaker11.demonicintervention.tile;
 
-import com.theundertaker11.demonicintervention.blocks.BaseStorageBlock;
-import com.theundertaker11.demonicintervention.blocks.ModelBlockBase;
+import javax.annotation.Nullable;
 
+import baubles.common.network.PacketHandler;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -28,6 +31,22 @@ public class ItemStoringTileBase extends TileEntity{
 	{
 		return this.slotNumber;
 	}
+	
+	@Override
+	@Nullable
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		return new SPacketUpdateTileEntity(this.pos, 3, this.getUpdateTag());
+	}
+	@Override
+	public NBTTagCompound getUpdateTag()
+	{
+		return this.writeToNBT(new NBTTagCompound());
+	}
+	@Override
+	public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SPacketUpdateTileEntity pkt)
+    {
+		
+    }
 	
 	//If you overwrite this make sure to call the super
 	@Override
@@ -78,4 +97,34 @@ public class ItemStoringTileBase extends TileEntity{
 	{
 	    return (oldState.getBlock() != newState.getBlock());
 	}
+    @Override
+    public void onLoad()
+    {
+    	updateEverything();
+    }
+    
+    private void updateEverything() {
+    	world.markBlockRangeForRenderUpdate(pos, pos);
+    	world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+    	world.scheduleBlockUpdate(pos,this.getBlockType(),0,0);
+		markDirty();
+    }
+    /*
+    public void syncToClients() {
+		if (this.world != null && !this.world.isRemote) {
+			for (EntityPlayer player : this.world.playerEntities) {
+				syncToClient(player);
+			}
+		}
+	}
+
+	public void syncToClient(EntityPlayer player) {
+		NBTTagCompound syncTag = new NBTTagCompound();
+		this.writeToNBT(syncTag);
+
+		if (player instanceof EntityPlayerMP && player.getDistance(pos.getX(), pos.getY(), pos.getZ()) <= this.getMaxSyncDistanceSquared()) {
+			PacketHandler.INSTANCE.sendTo(new SPacketSyncTileEntity(syncTag, this.pos), (EntityPlayerMP) player);
+		}
+	}
+	*/
 }

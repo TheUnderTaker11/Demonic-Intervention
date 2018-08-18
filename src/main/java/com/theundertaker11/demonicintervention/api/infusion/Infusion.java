@@ -2,6 +2,7 @@ package com.theundertaker11.demonicintervention.api.infusion;
 
 import com.theundertaker11.demonicintervention.capability.infusions.IInfusions;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -17,15 +18,9 @@ public class Infusion{
 	/**If the infusion is mostly/fully negative. */
 	public final boolean isCurse;
 	
-	/**String name to be shown to the player */
+	/**String lang key, formatted before being shown to player */
 	private String nameForShow;
-	
-	/**If the infusion should be called every player tick or not */
-	private boolean tickable;
-	
-	/**Level of the given infusion, could be good as in higher vampire levels, or bad as in a higher curse level*/
-	private short level;
-	
+
 	private int ID;
 	
 	public Infusion(String nameForShow, boolean isCurse)
@@ -40,10 +35,10 @@ public class Infusion{
 	 */
 	public String getNameForShow()
 	{
-		return this.nameForShow;
+		return I18n.format(this.nameForShow);
 	}
 	/**
-	 * Can be used to change the name at runtime, if ever needed.
+	 * Can be used to change the lang key at runtime, if ever needed.
 	 * @param name
 	 */
 	public void setNameForShow(String name)
@@ -63,38 +58,5 @@ public class Infusion{
 	protected void setID(int id)
 	{
 		this.ID = id;
-	}
-	
-	public boolean shouldBeTicked()
-	{
-		return this.tickable;
-	}
-	/**
-	 * Makes it so this infusion is called on every tick for each player that has it.
-	 */
-	public void setInfusionTickable()
-	{
-		this.tickable = true;
-	}
-	/**
-	 * If tickable=true, then this will be called each tick for every player online (Both client and server side).
-	 */
-	public void tickInfusion(EntityPlayer player, IInfusions iInfusions){}
-	
-	/**
-	 * Sets level of the infusion. Not all infusions will use different levels
-	 * @param level
-	 */
-	public void setLevel(short level)
-	{
-		this.level = level;
-	}
-	
-	/**
-	 * Gets level of the infusion. Not all infusions will use different levels
-	 */
-	public int getLevel()
-	{
-		return this.level;
 	}
 }

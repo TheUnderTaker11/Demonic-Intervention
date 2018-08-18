@@ -1,4 +1,4 @@
-package com.theundertaker11.demonicintervention;
+package com.theundertaker11.demonicintervention.init;
 
 import net.minecraftforge.common.config.Configuration;
 

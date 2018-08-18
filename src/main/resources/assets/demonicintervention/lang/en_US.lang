@@ -2,6 +2,22 @@ itemGroup.DICreativeTab=Demonic Intervention
 
 #Items
 item.debuggingtool.name=Debugging Tool
+item.essence.name=Essence Collector
+item.essence2.name=Collected Essence
+item.garliccharm.name=Blessed Garlic Charm
+item.umbrella.name=Umbrella
+item.garlicsword.name=Garlic Sword
+item.garlic.name=Garlic
+
+#Blocks
+tile.pedestal.name=Demonic Pedestal
+tile.ritualmain.name=Ritual Block
+tile.soulcleaner.name=Soul Cleaner
+
+#Item/Block Descriptions
+desc.garliccharm.name=Extremely useful against Vampires, only works in Baubles slot.
+desc.garlic.name=A garlic a day keeps the Vampires away!
+desc.umbrella.name=Must be held in main hand.
 
 #Infusions
 infusion.vampirism.name=Curse of Vampirism
@@ -11,6 +27,15 @@ infusion.nofalldamage.name=Infusion of the Feather
 misc.added.name=Added
 misc.removed.name=Removed
 misc.infusionset.name=Infusion Set
+misc.bloodlevel.name=Blood Level:
 
-#Blocks
-tile.pedestal.name=Demonic Pedestal
+#Messages to players
+entitymessage.failedessencegrab.name=You failed to collect the target entity's essence, and they noticed!
+entitymessage.failedessencegrabvictim.name=A player tried to collect your essence, watch your back!
+entitymessage.vampirecantdrink.name=You gain no nourishment from the blood of another Vampire.
+entitymessage.trieddrinkingvampireblood.name=You tried drinking the blood of a normal Vampire, it didn't taste very good.
+
+#Death Messages
+death.sun.name=was burnt to a crisp by the sun.
+death.vampire.name=the Vampire has fallen.
+death.vampirefire.name=realized just how weak Vampires are to fire.
