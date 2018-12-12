@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "age=0": { "model": "demonicintervention:garlic_stage0" },
+        "age=1": { "model": "demonicintervention:garlic_stage1" },
+        "age=2": { "model": "demonicintervention:garlic_stage2" }
+    }
+}

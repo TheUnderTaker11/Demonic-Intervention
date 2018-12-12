@@ -6,6 +6,7 @@ import com.theundertaker11.demonicintervention.items.BloodCollector;
 import com.theundertaker11.demonicintervention.items.ItemDebuggingTool;
 import com.theundertaker11.demonicintervention.items.ItemEssenceCollector;
 import com.theundertaker11.demonicintervention.items.baubles.GarlicCharm;
+import com.theundertaker11.demonicintervention.items.crops.ItemGarlic;
 import com.theundertaker11.demonicintervention.items.tools.ItemGarlicSword;
 import com.theundertaker11.demonicintervention.render.IItemModelProvider;
 
@@ -34,7 +35,7 @@ public class ItemRegistry {
 		essence = register(new ItemEssenceCollector("essence"));
 		umbrella = register(new BaseItem("umbrella", false, I18n.format("desc.umbrella.name")));
 		garlicSword = register(new ItemGarlicSword("garlicsword"));
-		garlic = register(new BaseItem("garlic", false, I18n.format("desc.garlic.name")));
+		garlic = register(new ItemGarlic("garlic", I18n.format("desc.garlic.name")));
 		garlicCharm = register(new GarlicCharm("garliccharm", I18n.format("desc.garliccharm.name")));
 		bloodBottle = register(new BloodBottle("bloodbottle"));
 		bloodCollector = register(new BloodCollector("bloodcollector"));

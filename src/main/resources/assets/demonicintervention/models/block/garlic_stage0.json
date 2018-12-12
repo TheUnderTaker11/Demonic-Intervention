@@ -1,0 +1,6 @@
+{
+    "parent": "block/crop",
+    "textures": {
+        "crop": "demonicintervention:blocks/garlic_stage0"
+    }
+}
