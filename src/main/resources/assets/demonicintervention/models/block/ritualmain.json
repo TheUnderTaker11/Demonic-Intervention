@@ -5,7 +5,8 @@
         "0": "blocks/nether_brick",
         "1": "blocks/obsidian",
         "2": "blocks/end_stone",
-        "3": "blocks/end_stone"
+        "3": "blocks/end_stone",
+        "particle": "blocks/nether_brick"
     },
     "elements": [
         {

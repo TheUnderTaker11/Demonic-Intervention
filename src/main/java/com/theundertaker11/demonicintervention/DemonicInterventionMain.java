@@ -7,8 +7,10 @@ import com.theundertaker11.demonicintervention.init.BlockRegistry;
 import com.theundertaker11.demonicintervention.init.DIConfig;
 import com.theundertaker11.demonicintervention.init.ItemRegistry;
 import com.theundertaker11.demonicintervention.init.PacketRegistry;
+import com.theundertaker11.demonicintervention.init.RecipeRegistry;
 import com.theundertaker11.demonicintervention.init.TileEntityRegistry;
 import com.theundertaker11.demonicintervention.proxy.CommonProxy;
+import com.theundertaker11.demonicintervention.worldgen.FlowerGen;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -18,6 +20,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = Reference.MODID, version = Reference.VERSION)
@@ -48,5 +51,8 @@ public class DemonicInterventionMain
     {
     	CapabilityHandler.init();
     	EventRegistry.init();
+    	RecipeRegistry.init();
+    	
+    	GameRegistry.registerWorldGenerator(new FlowerGen(), 50000);
     }
 }

@@ -13,13 +13,13 @@ import net.minecraftforge.common.capabilities.Capability.IStorage;
 public class ExtraDataStorage implements IStorage<IExtraData>{
 
 	private static final String BLOODLEVEL_ID = "BloodLevel";
-	private static final String ALPHA_ID = "isAlpha";
+	private static final String VAMP_PROGRESSION = "vampProgression";
 	@Override
  	public NBTBase writeNBT(Capability<IExtraData> capability, IExtraData instance, EnumFacing side)
  	{
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger(BLOODLEVEL_ID, instance.getBloodLevel());
-		tag.setBoolean(ALPHA_ID, instance.getIsAlphaVampire());
+		tag.setInteger(VAMP_PROGRESSION, instance.getVampProgression());
 		return tag;
  	}
 
@@ -30,7 +30,7 @@ public class ExtraDataStorage implements IStorage<IExtraData>{
  	{
  		NBTTagCompound tag = (NBTTagCompound)nbt;
  		instance.setBloodLevel(tag.getInteger(BLOODLEVEL_ID));
- 		instance.setIsAlphaVampire(tag.getBoolean(ALPHA_ID));
+ 		instance.setVampProgressionLevel(tag.getInteger(VAMP_PROGRESSION));
  	}
 	
 	

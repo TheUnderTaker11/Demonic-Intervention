@@ -69,4 +69,15 @@ public interface IExtraData {
 	public boolean isDaytime();
 	
 	public void setIsDaytime(boolean isDaytime);
+	/** 0=Nothing, 1=Has Leaped, 2=Is Vampire, 3=Is Alpha */
+	public int getVampProgression();
+	/** 0=Nothing, 1=Has Leaped, 2=Is Vampire, 3=Is Alpha */
+	public void addVampProgressionLevel();
+	/** 0=Nothing, 1=Has Leaped, 2=Is Vampire, 3=Is Alpha */
+	public void setVampProgressionLevel(int level);
+	
+	/** 0=Nothing, 1=Has Leaped, 2=Is Vampire, 3=Is Alpha */
+	public void addVampProgressionLevel(EntityPlayer player);
+	/** 0=Nothing, 1=Has Leaped, 2=Is Vampire, 3=Is Alpha */
+	public void setVampProgressionLevel(int level, EntityPlayer player);
 }

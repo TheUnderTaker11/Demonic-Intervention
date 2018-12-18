@@ -17,8 +17,10 @@ public class ExtraData implements IExtraData{
 
 	private int bloodLevel;
 	private static final int maxBloodLevel = 10000;
-	private boolean isAlphaVampire;
 	private boolean isDaytime;
+	/** 0=Nothing, 1=Has Leaped, 2=Is Vampire, 3=Is Alpha */
+	private int vampProgression;
+	private static final int MAX_VAMP_PROGRESSION = 3;
 	
 	@Override
 	public int getBloodLevel() {
@@ -61,17 +63,20 @@ public class ExtraData implements IExtraData{
 
 	@Override
 	public boolean getIsAlphaVampire() {
-		return this.isAlphaVampire;
+		return (this.vampProgression == 3);
 	}
 
 	@Override
 	public void setIsAlphaVampire(boolean isAlpha) {
-		this.isAlphaVampire = isAlpha;
+			if(isAlpha)
+				this.vampProgression = 3;
+			else
+				this.vampProgression = 2;
 	}
 
 	@Override
 	public int getMaxBloodLevel() {
-		if(this.isAlphaVampire)
+		if(this.getIsAlphaVampire())
 			return this.maxBloodLevel*2;
 		else 
 			return this.maxBloodLevel;
@@ -83,7 +88,7 @@ public class ExtraData implements IExtraData{
 			if(!InfusionUtils.hasInfusion(Infusions.vampirism, (EntityPlayer)entity))
 				return maxBloodLevel/8;//1250
 		}
-		if(entity instanceof EntityVillager || entity == null)
+		if(entity instanceof EntityVillager)
 			return maxBloodLevel/8;//1250
 		return 0;
 	}
@@ -111,7 +116,7 @@ public class ExtraData implements IExtraData{
 	@Override
 	public void setIsAlphaVampire(boolean isAlpha, EntityPlayer player) {
 		IMaxHealth hearts = ModUtils.getIMaxHealth((EntityLivingBase) player);
-		if(hearts != null && this.isAlphaVampire != isAlpha) {
+		if(hearts != null && this.getIsAlphaVampire() != isAlpha) {
 			if(isAlpha)
 				hearts.addBonusMaxHealth(30);
 			else
@@ -176,4 +181,60 @@ public class ExtraData implements IExtraData{
 		if(!(player instanceof EntityPlayerSP))
 			DIPacketHandler.INSTANCE.sendTo(new SyncExtraDataPacket(player), (EntityPlayerMP) player);
 	}
+
+	@Override
+	public int getVampProgression() {
+		if(this.getIsAlphaVampire()) {
+			this.vampProgression = 3;
+		}
+		return this.vampProgression;
+	}
+
+	@Override
+	public void addVampProgressionLevel(EntityPlayer player) {
+		this.addVampProgressionLevel();
+		if(this.vampProgression == 3) {
+			this.setIsAlphaVampire(true, player);
+		}
+		sendSyncPacket(player);
+	}
+	/**
+	 * Make sure this is changed if different vampire levels are added past 0-3. 
+	 * <p>
+	 * 0=Nothing, 1=Has Leaped, 2=Is Vampire, 3=Is Alpha
+	 * <p>
+	 * Handles the fact that 3 makes them alpha aka adds/removes hearts accordingly.
+	 */
+	@Override
+	public void setVampProgressionLevel(int level, EntityPlayer player) {
+		if(this.vampProgression == level)
+			return;
+		
+		int oldLevel = this.vampProgression;
+		this.setVampProgressionLevel(level);
+		if(oldLevel == 3 && level < 3) {
+			this.setIsAlphaVampire(false, player);
+		}
+		else if(oldLevel < 3 && level ==3) {
+			this.setIsAlphaVampire(true, player);
+		}
+		sendSyncPacket(player);
+	}
+
+	@Override
+	public void addVampProgressionLevel() {
+		if(this.vampProgression <= this.MAX_VAMP_PROGRESSION)
+			this.vampProgression += 1;
+	}
+
+	@Override
+	public void setVampProgressionLevel(int level) {
+		this.vampProgression = level;
+		if(this.vampProgression > this.MAX_VAMP_PROGRESSION)
+			this.vampProgression = 3;
+		if(this.vampProgression < 0)
+			this.vampProgression = 0;
+	}
+	
+	
 }

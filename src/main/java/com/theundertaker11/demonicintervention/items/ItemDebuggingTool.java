@@ -102,12 +102,14 @@ public class ItemDebuggingTool extends BaseItem {
 			{
 				if(infusions.hasInfusion(itemsInfusion))
 				{
-					infusions.removeInfusion(itemsInfusion, player);
+					//infusions.removeInfusion(itemsInfusion, player);
+					InfusionUtils.removeInfusion(player, itemsInfusion);
 					player.sendMessage(new TextComponentString(I18n.format("misc.removed.name")+": "+itemsInfusion.getNameForShow()));
 				}
 				else
 				{
-					infusions.addInfusion(itemsInfusion, player);
+					//infusions.addInfusion(itemsInfusion, player);
+					InfusionUtils.addInfusion(player, itemsInfusion); 
 					player.sendMessage(new TextComponentString(I18n.format("misc.added.name")+": "+itemsInfusion.getNameForShow()));
 				}
 			}

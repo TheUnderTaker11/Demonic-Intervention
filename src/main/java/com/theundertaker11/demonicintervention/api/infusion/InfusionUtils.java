@@ -9,6 +9,7 @@ import com.theundertaker11.demonicintervention.capability.infusions.IInfusions;
 import com.theundertaker11.demonicintervention.capability.infusions.InfusionsCapabilityProvider;
 import com.theundertaker11.demonicintervention.infusions.Infusions;
 
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 /**
@@ -32,16 +33,35 @@ public class InfusionUtils {
 	{
 		return player.getCapability(InfusionsCapabilityProvider.INFUSIONS_CAPABILITY, null);
 	}
-	
+	/**
+	 * Add an infusion. Ideally this will also handle all special cases, such as vampires needing progression and blood level set.
+	 * @param player
+	 * @param infusion
+	 */
 	public static void addInfusion(EntityPlayer player, Infusion infusion)
 	{
-		getIInfusions(player).addInfusion(infusion);
+		addingHandleSpecialCases(player, infusion);
+		if(player instanceof EntityPlayerSP) {
+			getIInfusions(player).addInfusion(infusion);
+			return;
+		}
+		
+		getIInfusions(player).addInfusion(infusion, player);
 	}
-	
+	/**
+	 * Ideally will handle all special cases, such as removing hearts when it was an alpha vampire etc.
+	 * @param player
+	 * @param infusion
+	 */
 	public static void removeInfusion(EntityPlayer player, Infusion infusion)
 	{
 		removalHandleSpecialCases(player, infusion);
-		getIInfusions(player).removeInfusion(infusion);
+		if(player instanceof EntityPlayerSP) {
+			getIInfusions(player).removeInfusion(infusion);
+			return;
+		}
+		
+		getIInfusions(player).removeInfusion(infusion, player);
 	}
 	
 	/**
@@ -75,6 +95,17 @@ public class InfusionUtils {
 				data.setIsAlphaVampire(false, player);
 				data.setBloodLevel(0, player);
 				data.setIsDaytime(false);
+				data.setVampProgressionLevel(0, player);
+			}
+		}
+	}
+	
+	private static void addingHandleSpecialCases(EntityPlayer player, Infusion infusion) {
+		IExtraData data = getExtraData(player);
+		if(data != null) {
+			if(infusion == Infusions.vampirism) {
+				data.setVampProgressionLevel(2, player);
+				data.setBloodLevel(1000, player);
 			}
 		}
 	}
@@ -111,5 +142,10 @@ public class InfusionUtils {
 		return false;
 	}
 	
+	public static int getVampireProgressionLevel(EntityPlayer player) {
+		if(getExtraData(player) != null)
+			return getExtraData(player).getVampProgression();
+		else return 0;
+	}
 /* ------------------------------------------------Extra Data things end------------------------------------------------*/
 }
