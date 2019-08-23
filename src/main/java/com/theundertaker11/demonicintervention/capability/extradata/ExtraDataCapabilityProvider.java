@@ -1,14 +1,12 @@
 package com.theundertaker11.demonicintervention.capability.extradata;
 
-import com.theundertaker11.demonicintervention.capability.extradata.IExtraData;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
-public class ExtraDataCapabilityProvider implements ICapabilitySerializable<NBTBase>{
+public class ExtraDataCapabilityProvider  implements ICapabilitySerializable<NBTBase>{
 
 	@CapabilityInject(IExtraData.class)
 	public static final Capability<IExtraData> EXTRADATA_CAPABILITY = null;

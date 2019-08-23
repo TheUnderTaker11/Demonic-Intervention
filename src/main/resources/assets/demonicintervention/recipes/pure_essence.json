@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "x"
+    ],
+    "key":
+    {
+        "x":
+        {
+            "item": "demonicintervention:condensedpurity",
+            "data": 0
+        }
+    },
+    "result":
+    {
+        "item": "demonicintervention:pureessence",
+        "count": 9,
+        "data": 0
+    }
+}

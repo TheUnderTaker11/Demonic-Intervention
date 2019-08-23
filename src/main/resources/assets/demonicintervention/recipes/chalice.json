@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "xxx",
+        "xzx",
+        " x "
+    ],
+    "key":
+    {
+        "z":
+        {
+            "type": "forge:ore_dict",
+            "ore": "gemEmerald"
+        },
+        "x":
+        {
+            "type": "forge:ore_dict",
+            "ore": "ingotGold"
+        }
+    },
+    "result":
+    {
+        "item": "demonicintervention:chalice",
+        "count": 1,
+        "data": 0
+    }
+}

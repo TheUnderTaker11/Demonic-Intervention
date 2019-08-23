@@ -11,15 +11,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class SyncExtraDataPacket implements IMessage {
+public class SyncVampireDataPacket implements IMessage {
 
 	EntityPlayer player;
 	private boolean isAlpha;
 	private int bloodLevel;
 	
-	public SyncExtraDataPacket() {}
+	public SyncVampireDataPacket() {}
 	
-	public SyncExtraDataPacket(EntityPlayer Player) {
+	public SyncVampireDataPacket(EntityPlayer Player) {
 		player = Player;
 	}
 
@@ -32,19 +32,19 @@ public class SyncExtraDataPacket implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		buf.writeBoolean(InfusionUtils.isAlphaVampire(player));
-		buf.writeInt(InfusionUtils.getExtraData(player).getBloodLevel());
+		buf.writeInt(InfusionUtils.getVampireData(player).getBloodLevel());
 	}
 
-	public static class Handler implements IMessageHandler<SyncExtraDataPacket, IMessage> {
+	public static class Handler implements IMessageHandler<SyncVampireDataPacket, IMessage> {
 
 		@Override
-		public IMessage onMessage(final SyncExtraDataPacket message, final MessageContext ctx) {
+		public IMessage onMessage(final SyncVampireDataPacket message, final MessageContext ctx) {
 			
 			EntityPlayerSP clientPlayer = Minecraft.getMinecraft().player;
-			if(InfusionUtils.getExtraData(clientPlayer) != null)
+			if(InfusionUtils.getVampireData(clientPlayer) != null)
 			{
-				InfusionUtils.getExtraData(clientPlayer).setIsAlphaVampire(message.isAlpha);
-				InfusionUtils.getExtraData(clientPlayer).setBloodLevel(message.bloodLevel);
+				InfusionUtils.getVampireData(clientPlayer).setIsAlphaVampire(message.isAlpha);
+				InfusionUtils.getVampireData(clientPlayer).setBloodLevel(message.bloodLevel);
 			}
 			return null;
 		}

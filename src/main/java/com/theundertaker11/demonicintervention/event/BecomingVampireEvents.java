@@ -39,7 +39,7 @@ public class BecomingVampireEvents {
 			if(!InfusionUtils.hasInfusion(Infusions.vampirism, player) && InfusionUtils.getVampireProgressionLevel(player) == 0) {
 				ItemStack flower = getFlower(player);
 				if(!flower.isEmpty()) {
-					InfusionUtils.getExtraData(player).addVampProgressionLevel(player);
+					InfusionUtils.getVampireData(player).addVampProgressionLevel(player);
 					event.setDamageMultiplier(0);
 					player.sendMessage(new TextComponentString("The Flower Speaks to You: Good, you have taken the leap. Now use the shining heart of a beast so foul to kill another of your kind, then drink of its blood from a golden chalice to attain the true power you seek."));
 				}
@@ -69,7 +69,6 @@ public class BecomingVampireEvents {
 			}
 		}
 	}
-	
 	private static ItemStack getFlower(EntityPlayer player) {
 		for(int i=0; i< player.inventory.getSizeInventory(); i++) {
 			ItemStack stack = player.inventory.getStackInSlot(i);

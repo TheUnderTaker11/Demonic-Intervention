@@ -5,11 +5,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.theundertaker11.demonicintervention.DemonicInterventionMain;
+import com.theundertaker11.demonicintervention.api.KarmaUtils;
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
 import com.theundertaker11.demonicintervention.infusions.Infusions;
+import com.theundertaker11.demonicintervention.init.DIConfig;
 import com.theundertaker11.demonicintervention.init.ItemRegistry;
 
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
@@ -69,16 +72,29 @@ public class ItemChalice extends BaseItem {
 		DemonicInterventionMain.proxy.registerItemRenderer(this, 1, "chalice1");
 		DemonicInterventionMain.proxy.registerItemRenderer(this, 2, "chalice2");
 	}
-
+	@Override
 	public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving) {
 		EntityPlayer player = entityLiving instanceof EntityPlayer ? (EntityPlayer) entityLiving : null;
-		if (player == null)
+		if (player == null) {
 			return stack;
-
-		if (stack.getItemDamage() == 2 && !InfusionUtils.hasInfusion(Infusions.vampirism, player)
-				&& InfusionUtils.getVampireProgressionLevel(player) == 1) {
-			InfusionUtils.addInfusion(player, Infusions.vampirism);
-			player.sendMessage(new TextComponentString("You feel powerful. Your days as a mortal man are finished."));
+		}
+		if (stack.getItemDamage() == 2 && !InfusionUtils.hasInfusion(Infusions.vampirism, player)) {
+			if(InfusionUtils.getVampireProgressionLevel(player) == 1) {
+				if(KarmaUtils.getKarma(player) <= DIConfig.karmaForVampire) {
+					if(!InfusionUtils.hasConflictingInfusions(player, Infusions.vampirism)) {
+						InfusionUtils.addInfusion(player, Infusions.vampirism);
+						player.sendMessage(new TextComponentString(I18n.format("entitymessage.becamevampire.name")));
+					}else {
+						InfusionUtils.getVampireData(player).setVampProgressionLevel(0, player);
+						player.sendMessage(new TextComponentString(I18n.format("entitymessage.conflictinginfusion.name")));
+					}
+				}else {
+					player.sendMessage(new TextComponentString(I18n.format("entitymessage.tomuchkarma.name")));
+					player.sendMessage(new TextComponentString("Current: " + KarmaUtils.getKarma(player) + ", Karma needed: " + DIConfig.karmaForVampire));
+				}
+			}else {
+				player.sendMessage(new TextComponentString(I18n.format("entitymessage.cantbecomevampire.name")));
+			}
 		}else {
 			return stack;
 		}
@@ -101,8 +117,17 @@ public class ItemChalice extends BaseItem {
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-		playerIn.setActiveHand(handIn);
-		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+		switch (playerIn.getHeldItem(EnumHand.MAIN_HAND).getItemDamage()) {
+		case 0:
+			return new ActionResult<ItemStack>(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
+		case 1:
+			playerIn.setActiveHand(handIn);
+			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+		case 2:
+			playerIn.setActiveHand(handIn);
+			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+		}
+		return new ActionResult<ItemStack>(EnumActionResult.PASS, playerIn.getHeldItem(handIn));
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import com.theundertaker11.demonicintervention.api.infusion.Infusion;
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
-import com.theundertaker11.demonicintervention.capability.extradata.IExtraData;
+import com.theundertaker11.demonicintervention.capability.vampiredata.IVampireData;
 import com.theundertaker11.demonicintervention.util.ModUtils;
 
 import net.minecraft.entity.player.EntityPlayer;

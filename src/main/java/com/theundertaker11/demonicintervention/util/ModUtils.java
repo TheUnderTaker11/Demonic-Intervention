@@ -7,8 +7,11 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
+import com.theundertaker11.demonicintervention.capability.extradata.ExtraDataCapabilityProvider;
+import com.theundertaker11.demonicintervention.capability.extradata.IExtraData;
 import com.theundertaker11.demonicintervention.capability.maxhealth.IMaxHealth;
 import com.theundertaker11.demonicintervention.capability.maxhealth.MaxHealthCapabilityProvider;
+import com.theundertaker11.demonicintervention.init.DIConfig;
 import com.theundertaker11.demonicintervention.init.ItemRegistry;
 
 import baubles.api.BaublesApi;
@@ -16,11 +19,11 @@ import baubles.api.cap.IBaublesItemHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -34,8 +37,10 @@ public class ModUtils{
 	/** The countdown for this is automatically handled in MainEventHandler.class */
 	public static ArrayList<CooldownObj> cooldowns = new ArrayList<>();
 	
-	/** Must use {@link DelayObj#setShouldCountDown(boolean)} and {@link DelayObj#reset()} in the place you use this list. <p>
-	 * When shouldCountDown=true, it automatically counts down to 0, but stays on the list so you can reset it for the next time. <p>
+	/** Must use {@link DelayObj#setShouldCountDown(boolean)} and {@link DelayObj#reset()} in the place you use this list. 
+	 * <p>
+	 * When shouldCountDown=true, it automatically counts down to 0, but stays on the list so you can reset it for the next time. 
+	 * <p>
 	 * I use this list to count the time an Alpha Vampire is in the sun before death, or when he is holding an umbrella.*/
 	public static ArrayList<DelayObj> delayList = new ArrayList<>();
 	
@@ -71,6 +76,8 @@ public class ModUtils{
 	
 	/**
 	 * There will be no two delays on this list with same UUID and name.
+	 * <p>
+	 * This is because entries in this are meant to be re-used over and over
 	 * @param id
 	 * @param name
 	 * @param ticks
@@ -112,7 +119,22 @@ public class ModUtils{
 		}
 		return false;
 	}
-	
+	/**
+	 * Returns true if they are the same thing essentially.
+	 * <p>
+	 * This means same Item, same Meta, ignores NBT
+	 * @param stack1
+	 * @param stack2
+	 * @return
+	 */
+	public static boolean compareItems(ItemStack stack1, ItemStack stack2) {
+		if(stack1.getItem() == stack2.getItem()) {
+			if(stack1.getItemDamage() == stack2.getItemDamage()) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * Honestly took way to long to find out how to do this shit.
 	 * @param pos
@@ -200,6 +222,14 @@ public class ModUtils{
 		}	
 		return false;
 	}
+	
+	public static NonNullList<ItemStack> createCopyItemList(NonNullList<ItemStack> list){
+		NonNullList<ItemStack> copy = NonNullList.create();
+		for(ItemStack stack : list) {
+			copy.add(stack);
+		}
+		return copy;
+	}
 	/**
 	 * Checks if the player has the garlic charm
 	 * @param player
@@ -229,10 +259,10 @@ public class ModUtils{
 	}
 	
 	public static boolean isDrinkable(EntityLivingBase ent) {
-		if(ent instanceof EntityVillager || ent instanceof EntityPlayer)
+		if(DIConfig.isDrinkableEntity(ent))
 		{
-			if(InfusionUtils.getExtraData(ent) != null) {
-				if(InfusionUtils.getExtraData(ent).getBloodLevel()>0) {
+			if(InfusionUtils.getVampireData(ent) != null) {
+				if(InfusionUtils.getVampireData(ent).getBloodLevel()>0) {
 					return true;
 				}
 			}
@@ -263,6 +293,11 @@ public class ModUtils{
 	    {
 			return new TextComponentString(entityLivingBaseIn.getName() + " " + I18n.format(deathMessageLangKey));
 	    }
+	}
+	
+	@Nullable
+	public static IExtraData getExtraData(EntityPlayer entity) {
+		return entity.getCapability(ExtraDataCapabilityProvider.EXTRADATA_CAPABILITY, null);
 	}
 	
 	public static List<Entity> getEntitiesInRange(Class<? extends Entity> entityType, World world, double x, double y, double z, double radius) {

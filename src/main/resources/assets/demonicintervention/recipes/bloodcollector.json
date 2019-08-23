@@ -1,0 +1,38 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        " y ",
+        "ada",
+        " x "
+    ],
+    "key":
+    {
+        "y":
+        {
+            "type": "forge:ore_dict",
+            "ore": "dustRedstone"
+        },
+        "d":
+        {
+            "item": "minecraft:piston",
+            "data": 0
+        },
+        "x":
+        {
+            "item": "minecraft:arrow",
+            "data": 0
+        },
+        "a":
+        {
+            "item": "minecraft:iron_block",
+            "data": 0
+        }
+    },
+    "result":
+    {
+        "item": "demonicintervention:bloodcollector",
+        "count": 1,
+        "data": 0
+    }
+}

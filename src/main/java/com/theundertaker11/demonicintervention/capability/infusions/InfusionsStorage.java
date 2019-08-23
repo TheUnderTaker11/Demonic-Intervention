@@ -43,7 +43,7 @@ public class InfusionsStorage implements IStorage<IInfusions>
  		
  		for (int i = 0; i < tag.getIntArray(NBT_INFUSIONS_ARRAY_ID).length; i++)
  		{
- 			Infusion infusion = InfusionUtils.getInfusionFromID(i);
+ 			Infusion infusion = InfusionUtils.getInfusionFromID(tag.getIntArray(NBT_INFUSIONS_ARRAY_ID)[i]);
  			if(infusion!=null)
  			{
  				instance.addInfusion(infusion);

@@ -1,0 +1,33 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        " x ",
+        "ada",
+        " a "
+    ],
+    "key":
+    {
+        "d":
+        {
+            "item": "minecraft:clock",
+            "data": 0
+        },
+        "x":
+        {
+            "item": "demonicintervention:evilessence",
+            "data": 0
+        },
+        "a":
+        {
+            "item": "minecraft:comparator",
+            "data": 0
+        }
+    },
+    "result":
+    {
+        "item": "demonicintervention:karmareader",
+        "count": 1,
+        "data": 0
+    }
+}

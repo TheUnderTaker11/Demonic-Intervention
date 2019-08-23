@@ -1,38 +1,238 @@
 package com.theundertaker11.demonicintervention.blocks.ritualmainblock;
 
-import com.jcraft.jorbis.Block;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import javax.annotation.Nullable;
+
+import com.theundertaker11.demonicintervention.api.pedestalcrafting.PedestalEssenceRecipe;
+import com.theundertaker11.demonicintervention.api.pedestalcrafting.PedestalRecipe;
+import com.theundertaker11.demonicintervention.api.pedestalcrafting.PedestalUtils;
+import com.theundertaker11.demonicintervention.blocks.pedestal.TilePedestal;
 import com.theundertaker11.demonicintervention.init.BlockRegistry;
+import com.theundertaker11.demonicintervention.init.ItemRegistry;
+import com.theundertaker11.demonicintervention.items.ItemEssenceCollector;
 import com.theundertaker11.demonicintervention.tile.ItemStoringTileBase;
+import com.theundertaker11.demonicintervention.util.ModUtils;
 
 import net.minecraft.block.BlockQuartz;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class TileRitualMain extends ItemStoringTileBase{
+public class TileRitualMain extends ItemStoringTileBase implements ITickable{
 
 	private int tier;
+	private int ticksWorking;
+	protected UUID lastPlayer;
+	//private int ticksNeeded;
+	
 	public TileRitualMain() {super();}
 	
 	public ItemStack getStoredStack()
 	{
 		return itemStackHandler.getStackInSlot(0);
 	}
+	/**
+	 * All but normal crafting needs manually updated to client with packets..... GROSS EWWWW
+	 */
+	@Override
+	public void update() {
+		short canCraft = canCraft();
+		if(canCraft == 1) { // Is normal pedestal crafting
+			if(ticksWorking < 0)
+				ticksWorking = 0;
+			PedestalRecipe recipe = PedestalUtils.getRecipe(getStoredStack());
+			if(ticksWorking >= recipe.getTimeNeeded()) {
+				ticksWorking = 0;
+				clearPedestals();
+				itemStackHandler.setStackInSlot(0, recipe.getResultingStack());
+				this.markDirty();
+				EntityLightningBolt lightning = new EntityLightningBolt(world, pos.getX(), pos.getY(), pos.getZ(), true);
+				world.spawnEntity(lightning);
+				recipe.onFinish(pos, world);
+			}else {
+				ticksWorking++;
+				doLightningLogic(recipe.getTimeNeeded());
+			}
+		}
+		else if(canCraft == 2) { //Is taglock ritual
+			if(ticksWorking < 0)
+				ticksWorking = 0;
+			PedestalEssenceRecipe ritual = getEssenceRitual();
+			if(ritual == null) return;
+			doLightningLogic(ritual.getTimeNeeded());
+			if(ticksWorking >= ritual.getTimeNeeded()) {
+				EntityPlayer caster = world.getMinecraftServer().getPlayerList().getPlayerByUUID(lastPlayer);
+				if(caster == null) return;
+				EntityLivingBase target = ItemEssenceCollector.getEntityLivingOffItem(this.getStoredStack(), world);
+				ticksWorking = 0;
+				clearPedestals();
+				itemStackHandler.setStackInSlot(0, ritual.getResultingStack());
+				this.markDirty();
+				ritual.onFinish(this.getPos(), caster, target);
+				EntityLightningBolt lightning = new EntityLightningBolt(world, pos.getX(), pos.getY(), pos.getZ(), true);
+				world.spawnEntity(lightning);
+			}else {
+				ticksWorking++;
+			}
+		}
+		else {
+			ticksWorking = 0;
+		}
+	}
+	/**
+	 * 
+	 * @return 0 for can't, 1 for normal recipe, 2 for Taglock recipe
+	 */
+	private short canCraft() {
+		if(getStoredStack().isEmpty())
+			return 0;
+		this.updateTier();
+		this.updateAllTiles();
+		if(getStoredStack().getItem() == ItemRegistry.essence && this.lastPlayer != null){
+			return canCraftSpecial();
+		}
+		PedestalRecipe recipe = PedestalUtils.getRecipe(getStoredStack());
+		if(recipe != null){
+			if( (recipe.karmaType() < 0 && recipe.getTier() >= this.getTierNoUpdate()) 
+					|| (recipe.karmaType() > 0 && recipe.getTier() <= this.getTierNoUpdate())
+					|| (recipe.karmaType() == 0 && Math.abs(recipe.getTier()) <= Math.abs(this.getTierNoUpdate()))) {
+				NonNullList<ItemStack> copyList = ModUtils.createCopyItemList(recipe.getItemList());
+				switch(recipe.getTier()) {
+				case 1:
+					return t1CheckIfAllItemsThere(copyList);
+				case -1:
+					return t1CheckIfAllItemsThere(copyList);
+				default:
+					return 0;
+				}
+			}else return 0;
+		}
+		return 0;
+	}
+	/**
+	 * Currently just for when a taglock is the main ingredient.
+	 * @return
+	 */
+	private short canCraftSpecial() {
+		EntityLivingBase entityLiving = ItemEssenceCollector.getEntityLivingOffItem(this.getStoredStack(), world);
+		if(entityLiving == null) {
+			entityLiving = ItemEssenceCollector.getPlayerOffItem(this.getStoredStack(), world);
+		}
+		if(entityLiving != null) {
+			NonNullList<ItemStack> list = NonNullList.create();
+			for(TilePedestal tile : this.getT1Pedestals()) {
+				list.add(tile.getStoredStack());
+			}
+			PedestalRecipe ritual = PedestalUtils.getRitual(list);
+			if(ritual != null) {
+				System.out.println("OOPSY DAISY");
+				if(ritual instanceof PedestalEssenceRecipe) {
+					if(((PedestalEssenceRecipe) ritual).isOnlyPlayers() && !(entityLiving instanceof EntityPlayer))
+						return 0;
+					else 
+						return 2;
+				}else {
+					return 0;
+				}
+			}else return 0;
+		}
+		return 0;
+	}
+	/**
+	 * Looks if all the items in the copyList are on the T1 pedestals
+	 * @param copyList
+	 * @return
+	 */
+	private short t1CheckIfAllItemsThere(NonNullList<ItemStack> copyList) {
+		if(this.getTierNoUpdate() == 0)
+			return 0;
+		for(TilePedestal tile : this.getT1Pedestals()) {
+			for(int i=0 ; i < copyList.size(); i++) {
+				ItemStack copyStack = copyList.get(i);
+				if(ModUtils.compareItems(copyStack, tile.getStoredStack())) {
+					copyList.set(i, ItemStack.EMPTY);
+					break;
+				}
+			}
+		}
+		for(ItemStack copyStack : copyList)
+		{
+			if(!copyStack.isEmpty())
+				return 0;
+		}
+		
+		return 1;
+	}
+	/**
+	 * Uses current stored items to determine ritual when essence is center item
+	 * @return
+	 */
+	private PedestalEssenceRecipe getEssenceRitual() {
+		if(this.getStoredStack().getItem() != ItemRegistry.essence) return null;
+		
+		NonNullList<ItemStack> list = NonNullList.create();
+		for(TilePedestal tile : this.getT1Pedestals()) {
+			list.add(tile.getStoredStack());
+		}
+		return PedestalUtils.getEssenceRitual(list);
+	}
+	private void clearPedestals() {
+		if(this.getTierNoUpdate() == 1 || this.getTierNoUpdate() == -1) {
+			for(TilePedestal tile : this.getT1Pedestals()) {
+				tile.setStoredStack(ItemStack.EMPTY);
+			}
+		}
+		
+	}
+	
+	private void doLightningLogic(int time) {
+		if(ticksWorking == (int)((double)time * (0.2D))) {
+			EntityLightningBolt lightning = new EntityLightningBolt(world, pos.getX()+3, pos.getY()+2, pos.getZ(), true);
+			world.spawnEntity(lightning);
+		}
+		if(ticksWorking == (int)((double)time * (0.4D))) {
+			EntityLightningBolt lightning = new EntityLightningBolt(world, pos.getX()-3, pos.getY()+2, pos.getZ(), true);
+			world.spawnEntity(lightning);
+		}
+		if(ticksWorking == (int)((double)time * (0.6D))) {
+			EntityLightningBolt lightning = new EntityLightningBolt(world, pos.getX(), pos.getY()+2, pos.getZ()+3, true);
+			world.spawnEntity(lightning);
+		}
+		if(ticksWorking == (int)((double)time * (0.8D))) {
+			EntityLightningBolt lightning = new EntityLightningBolt(world, pos.getX(), pos.getY()+2, pos.getZ()-3, true);
+			world.spawnEntity(lightning);
+		}
+	}
+	//If you overwrite this make sure to call the super
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound)
 	{
-        compound.setInteger("tier", this.tier);
-        return super.writeToNBT(compound);
+		compound.setTag("inputitem", itemStackHandler.serializeNBT());
+		if(this.lastPlayer != null) compound.setUniqueId("lastPlayerUUID", this.lastPlayer);
+		return super.writeToNBT(compound);
 	}
-	
-	//If you overwrite this make sure to call the super
+		
+		//If you overwrite this make sure to call the super
 	@Override
 	public void readFromNBT(NBTTagCompound compound)
 	{
 		super.readFromNBT(compound);
-		if (compound.hasKey("tier"))
+		if (compound.hasKey("inputitem"))
 		{
-			this.tier = compound.getInteger("tier");
+			itemStackHandler.deserializeNBT((NBTTagCompound) compound.getTag("inputitem"));
+		}
+		if(compound.hasKey("lastPlayerUUID")) {
+			this.lastPlayer = compound.getUniqueId("lastPlayerUUID");
 		}
 	}
 	/**
@@ -179,5 +379,28 @@ public class TileRitualMain extends ItemStoringTileBase{
 			return true;
 		}
 		return false;
+	}
+	private ArrayList<TilePedestal> getT1Pedestals(){
+		ArrayList<TilePedestal> list = new ArrayList<>();
+		list.add((TilePedestal)world.getTileEntity(pos.up().north(3).up()));
+		list.add((TilePedestal)world.getTileEntity(pos.up().east(3).up()));
+		list.add((TilePedestal)world.getTileEntity(pos.up().south(3).up()));
+		list.add((TilePedestal)world.getTileEntity(pos.up().west(3).up()));
+		return list;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void setTicksWorking(int ticks) {
+		this.ticksWorking = ticks;
+	}
+	
+	private void updateAllTiles() {
+		//This tile
+		world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+		//T1 Tiles
+		world.notifyBlockUpdate(pos.up().north(3).up(), world.getBlockState(pos.up().north(3).up()), world.getBlockState(pos.up().north(3).up()), 2);
+		world.notifyBlockUpdate(pos.up().east(3).up(), world.getBlockState(pos.up().east(3).up()), world.getBlockState(pos.up().east(3).up()), 2);
+		world.notifyBlockUpdate(pos.up().south(3).up(), world.getBlockState(pos.up().south(3).up()), world.getBlockState(pos.up().south(3).up()), 2);
+		world.notifyBlockUpdate(pos.up().west(3).up(), world.getBlockState(pos.up().west(3).up()), world.getBlockState(pos.up().west(3).up()), 2);
 	}
 }

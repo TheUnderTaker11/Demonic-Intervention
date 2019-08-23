@@ -1,13 +1,17 @@
 package com.theundertaker11.demonicintervention.compat;
 
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
+import com.theundertaker11.demonicintervention.capability.infusions.IInfusions;
+import com.theundertaker11.demonicintervention.infusions.InfusionVampirism;
 import com.theundertaker11.demonicintervention.infusions.Infusions;
 
 import matteroverdrive.api.android.IAndroid;
 import matteroverdrive.entity.player.MOPlayerCapabilityProvider;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.Optional;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 
@@ -20,11 +24,19 @@ public class MatterOverdrive {
 	 * @param event
 	 */
 	@SubscribeEvent
-	public static void onPlayerTick(PlayerTickEvent event)
+	public static void checkAndroidCompat(PlayerTickEvent event)
 	{
 		try {
-			if(isPlayerMOAndriod(event.player) && InfusionUtils.hasInfusion(Infusions.vampirism, event.player)) {
-				InfusionUtils.removeInfusion(event.player, Infusions.vampirism);
+			if(isPlayerMOAndriod(event.player)) {
+				IInfusions infusions = InfusionUtils.getIInfusions(event.player);
+				if(infusions.hasInfusion(Infusions.vampirism)) {
+					infusions.removeInfusion(Infusions.vampirism);
+					event.player.sendMessage(new TextComponentString(I18n.format("entitymessage.androidconflict.name")));
+				}
+				if(infusions.hasInfusion(Infusions.vampireHunter)) {
+					infusions.removeInfusion(Infusions.vampireHunter);
+					event.player.sendMessage(new TextComponentString(I18n.format("entitymessage.androidconflict.name")));
+				}
 			}
 		}catch(NoSuchMethodError e) {}
 	}

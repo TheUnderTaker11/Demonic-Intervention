@@ -10,6 +10,5 @@ public class EventRegistry {
 	public static void init()
 	{
 		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
-		
 	}
 }

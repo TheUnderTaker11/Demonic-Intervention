@@ -5,8 +5,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
-import com.theundertaker11.demonicintervention.capability.extradata.IExtraData;
+import com.theundertaker11.demonicintervention.capability.vampiredata.IVampireData;
 import com.theundertaker11.demonicintervention.infusions.Infusions;
+import com.theundertaker11.demonicintervention.init.DIConfig;
 import com.theundertaker11.demonicintervention.util.ModUtils;
 import com.theundertaker11.demonicintervention.util.NBTKeys;
 
@@ -17,6 +18,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,8 +48,8 @@ public class BloodBottle extends BaseItem{
 			EntityPlayer player = (EntityPlayer) entityLiving;
 			NBTTagCompound tag = ModUtils.getTagCompound(stack);
 			if(!tag.getBoolean(NBTKeys.IS_VAMPIRE) && InfusionUtils.hasInfusion(Infusions.vampirism, player)) {
-				IExtraData data = InfusionUtils.getExtraData(player);
-				data.addBlood(90, player);
+				IVampireData data = InfusionUtils.getVampireData(player);
+				data.addBlood(DIConfig.bloodBottleAmount, player);
 			}else {
 				player.sendMessage(new TextComponentString(I18n.format("entitymessage.vampirecantdrink.name")));
 			}
@@ -58,6 +62,12 @@ public class BloodBottle extends BaseItem{
 		}
 		return ItemStack.EMPTY;
     }
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+		playerIn.setActiveHand(handIn);
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
+	}
 	
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack)

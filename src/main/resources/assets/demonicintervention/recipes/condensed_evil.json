@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern":
+    [
+        "xxx",
+        "xxx",
+        "xxx"
+    ],
+    "key":
+    {
+        "x":
+        {
+            "item": "demonicintervention:evilessence",
+            "data": 0
+        }
+    },
+    "result":
+    {
+        "item": "demonicintervention:condensedevil",
+        "count": 1,
+        "data": 0
+    }
+}

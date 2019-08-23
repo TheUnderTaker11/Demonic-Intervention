@@ -33,20 +33,10 @@ public class ItemStoringTileBase extends TileEntity{
 	}
 	
 	@Override
-	@Nullable
-	public SPacketUpdateTileEntity getUpdatePacket() {
-		return new SPacketUpdateTileEntity(this.pos, 3, this.getUpdateTag());
-	}
-	@Override
 	public NBTTagCompound getUpdateTag()
 	{
 		return this.writeToNBT(new NBTTagCompound());
 	}
-	@Override
-	public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SPacketUpdateTileEntity pkt)
-    {
-		
-    }
 	
 	//If you overwrite this make sure to call the super
 	@Override
@@ -109,22 +99,18 @@ public class ItemStoringTileBase extends TileEntity{
     	world.scheduleBlockUpdate(pos,this.getBlockType(),0,0);
 		markDirty();
     }
-    /*
-    public void syncToClients() {
-		if (this.world != null && !this.world.isRemote) {
-			for (EntityPlayer player : this.world.playerEntities) {
-				syncToClient(player);
-			}
-		}
-	}
-
-	public void syncToClient(EntityPlayer player) {
-		NBTTagCompound syncTag = new NBTTagCompound();
-		this.writeToNBT(syncTag);
-
-		if (player instanceof EntityPlayerMP && player.getDistance(pos.getX(), pos.getY(), pos.getZ()) <= this.getMaxSyncDistanceSquared()) {
-			PacketHandler.INSTANCE.sendTo(new SPacketSyncTileEntity(syncTag, this.pos), (EntityPlayerMP) player);
-		}
-	}
-	*/
+    
+    @Override
+	public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SPacketUpdateTileEntity pkt)
+    {
+		NBTTagCompound tag = pkt.getNbtCompound();
+		this.readFromNBT(tag);
+    }
+	
+	@Override
+	@Nullable
+    public SPacketUpdateTileEntity getUpdatePacket()
+    {
+        return new SPacketUpdateTileEntity(pos, 0, this.writeToNBT(new NBTTagCompound()));
+    }
 }

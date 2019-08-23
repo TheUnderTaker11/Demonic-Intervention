@@ -1,11 +1,11 @@
 package com.theundertaker11.demonicintervention.event;
 
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
-import com.theundertaker11.demonicintervention.capability.extradata.IExtraData;
+import com.theundertaker11.demonicintervention.capability.vampiredata.IVampireData;
 import com.theundertaker11.demonicintervention.infusions.Infusions;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -21,25 +21,21 @@ public class RegenBloodLevels {
 
 	@SubscribeEvent
 	public static void regenAllBlood(WorldTickEvent event) {
-		if(!event.world.isRemote && MainEventHandler.bloodCounter > 1198) {
+		if(!event.world.isRemote && event.world.getTotalWorldTime() % 1200 == 0) {
 			for(Entity ent: event.world.loadedEntityList)
 			{
-				if(ent!=null&&ent instanceof EntityLivingBase && !(ent instanceof EntityPlayer))
+				if(ent!=null && ent instanceof EntityVillager)
 				{
-					EntityLivingBase entity = (EntityLivingBase)ent;
-					IExtraData data = InfusionUtils.getExtraData(entity);
-					if(data != null) {
-						if(data.getBloodLevel()<data.getMaxBloodLevel(entity)) {
-							data.addBloodNormalEntity(126/2);
-						}
-					}
+					EntityVillager entity = (EntityVillager)ent;
+					IVampireData data = InfusionUtils.getVampireData(entity);
+					data.addBloodNormalEntity(126/2);
 				}
 			}
 			
 			for(EntityPlayer player: event.world.playerEntities)
 			{
 				if(!InfusionUtils.hasInfusion(Infusions.vampirism, player)) {
-					IExtraData data = InfusionUtils.getExtraData(player);
+					IVampireData data = InfusionUtils.getVampireData(player);
 					if(data != null) {
 						if(data.getBloodLevel()<data.getMaxBloodLevel(player)) {
 							data.addBloodNormalEntity(126/2);
@@ -49,9 +45,9 @@ public class RegenBloodLevels {
 			}
 		}
 		
-		if(!event.world.isRemote && MainEventHandler.twentyMinuteCounter > 2398) {
+		if(!event.world.isRemote && event.world.getTotalWorldTime() % 24000 == 0) {
 			for(EntityPlayerMP player : event.world.getMinecraftServer().getPlayerList().getPlayers()) {
-				IExtraData extraData = InfusionUtils.getExtraData(player);
+				IVampireData extraData = InfusionUtils.getVampireData(player);
 				if(InfusionUtils.hasInfusion(Infusions.vampirism, player) && extraData != null) {
 					if(extraData.getBloodLevel() > 0) {
 						extraData.removeBlood(23, player);

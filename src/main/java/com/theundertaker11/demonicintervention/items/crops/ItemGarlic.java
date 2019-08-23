@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ItemGarlic extends ItemSeeds implements IItemModelProvider{
 
@@ -39,6 +40,7 @@ public class ItemGarlic extends ItemSeeds implements IItemModelProvider{
 		this.desc = desc;
 		this.name = name;
 		MinecraftForge.addGrassSeed(new ItemStack(ItemRegistry.garlic), 5);
+		OreDictionary.registerOre("cropGarlic", this);
 	}
 
 	@Override

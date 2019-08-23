@@ -2,7 +2,7 @@ package com.theundertaker11.demonicintervention.proxy.packets;
 
 import com.theundertaker11.demonicintervention.Reference;
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
-import com.theundertaker11.demonicintervention.proxy.packets.servertoclient.SyncExtraDataPacket;
+import com.theundertaker11.demonicintervention.proxy.packets.servertoclient.SyncVampireDataPacket;
 import com.theundertaker11.demonicintervention.proxy.packets.servertoclient.SyncInfusionsPacket;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -30,7 +30,7 @@ public class DIPacketHandler {
 	public static void playerLogin(PlayerLoggedInEvent event) {
 		if(!event.player.world.isRemote && InfusionUtils.getIInfusions(event.player) != null) {
 			INSTANCE.sendTo(new SyncInfusionsPacket(event.player), (EntityPlayerMP) event.player);
-			INSTANCE.sendTo(new SyncExtraDataPacket(event.player), (EntityPlayerMP) event.player);
+			INSTANCE.sendTo(new SyncVampireDataPacket(event.player), (EntityPlayerMP) event.player);
 		}
 	}
 	
@@ -38,7 +38,7 @@ public class DIPacketHandler {
 	public static void playerChangeDim(PlayerChangedDimensionEvent event) {
 		if(!event.player.world.isRemote && InfusionUtils.getIInfusions(event.player) != null) {
 			INSTANCE.sendTo(new SyncInfusionsPacket(event.player), (EntityPlayerMP) event.player);
-			INSTANCE.sendTo(new SyncExtraDataPacket(event.player), (EntityPlayerMP) event.player);
+			INSTANCE.sendTo(new SyncVampireDataPacket(event.player), (EntityPlayerMP) event.player);
 		}
 	}
 	
@@ -46,7 +46,7 @@ public class DIPacketHandler {
 	public static void playerRespawn(PlayerRespawnEvent event) {
 		if(!event.player.world.isRemote && InfusionUtils.getIInfusions(event.player) != null) {
 			INSTANCE.sendTo(new SyncInfusionsPacket(event.player), (EntityPlayerMP) event.player);
-			INSTANCE.sendTo(new SyncExtraDataPacket(event.player), (EntityPlayerMP) event.player);
+			INSTANCE.sendTo(new SyncVampireDataPacket(event.player), (EntityPlayerMP) event.player);
 		}
 	}
 	

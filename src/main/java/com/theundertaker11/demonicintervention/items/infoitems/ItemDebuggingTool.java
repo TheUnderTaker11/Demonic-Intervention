@@ -1,4 +1,4 @@
-package com.theundertaker11.demonicintervention.items;
+package com.theundertaker11.demonicintervention.items.infoitems;
 
 import java.util.List;
 
@@ -6,8 +6,9 @@ import javax.annotation.Nullable;
 
 import com.theundertaker11.demonicintervention.api.infusion.Infusion;
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
-import com.theundertaker11.demonicintervention.capability.extradata.IExtraData;
 import com.theundertaker11.demonicintervention.capability.infusions.IInfusions;
+import com.theundertaker11.demonicintervention.capability.vampiredata.IVampireData;
+import com.theundertaker11.demonicintervention.items.BaseItem;
 import com.theundertaker11.demonicintervention.util.ModUtils;
 
 import net.minecraft.client.resources.I18n;
@@ -67,7 +68,7 @@ public class ItemDebuggingTool extends BaseItem {
     {
 		if(!player.getEntityWorld().isRemote && entity instanceof EntityLivingBase) {
 			EntityLivingBase entLiving = (EntityLivingBase)entity;
-			IExtraData data = InfusionUtils.getExtraData(entLiving);
+			IVampireData data = InfusionUtils.getVampireData(entLiving);
 			if(data != null) {
 				//System.out.println("Blood: " + data.getBloodLevel());
 				player.sendMessage(new TextComponentString(I18n.format("misc.bloodlevel.name") + data.getBloodLevel()));

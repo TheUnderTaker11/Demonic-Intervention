@@ -12,6 +12,7 @@ public class GarlicCharm extends BaseItem implements IBauble{
 
 	public GarlicCharm(String name, String desc) {
 		super(name, desc);
+		this.setMaxStackSize(1);
 	}
 
 	@Optional.Method(modid = "baubles")

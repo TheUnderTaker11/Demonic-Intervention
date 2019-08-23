@@ -8,20 +8,31 @@ item.garliccharm.name=Blessed Garlic Charm
 item.umbrella.name=Umbrella
 item.garlicsword.name=Garlic Sword
 item.garlic.name=Garlic
+item.chalice.name=Golden Chalice
+item.bloodcollector.name=Blood Collector
+item.pureessence.name=Pure Essence
+item.condensedpurity.name=Condensed Purity
+item.evilessence.name=Evil Essence
+item.condensedevil.name=Condensed Evil
+item.bloodbottle.name=Bottle of Blood
+item.karmareader.name=Karma Reader
+item.karmaextractor.name=Karma Extractor
 
 #Blocks
 tile.pedestal.name=Demonic Pedestal
 tile.ritualmain.name=Ritual Block
 tile.soulcleaner.name=Soul Cleaner
+tile.netherflower.name=Nether Flower
 
 #Item/Block Descriptions
 desc.garliccharm.name=Extremely useful against Vampires, only works in Baubles slot.
 desc.garlic.name=A garlic a day keeps the Vampires away!
-desc.umbrella.name=Must be held in main hand.
+desc.umbrella.name=Must be held in main hand. OFFHAND MUST BE EMPTY
 
 #Infusions
 infusion.vampirism.name=Curse of Vampirism
 infusion.nofalldamage.name=Infusion of the Feather
+infusion.vampirehunter.name=Vampire Hunter
 
 #Misc Terms
 misc.added.name=Added
@@ -34,6 +45,17 @@ entitymessage.failedessencegrab.name=You failed to collect the target entity's e
 entitymessage.failedessencegrabvictim.name=A player tried to collect your essence, watch your back!
 entitymessage.vampirecantdrink.name=You gain no nourishment from the blood of another Vampire.
 entitymessage.trieddrinkingvampireblood.name=You tried drinking the blood of a normal Vampire, it didn't taste very good.
+entitymessage.cantbecomevampire.name=Your body is not yet ready. More preparations must be done.
+entitymessage.becamevampire.name=You feel powerful. Your days as a mortal man are finished.
+entitymessage.karmagained.name=Karma Gained: 
+entitymessage.karmalevel.name=Your current Karma level is 
+entitymessage.notenoughkarma.name=You did not have enough Karma for this! It has failed.
+entitymessage.conflictinginfusion.name=There is a conflicting Infusion/Curse not allowing you to do this.
+entitymessage.becomevampirehunter.name=You are now an official Vampire Hunter
+entitymessage.tomuchkarma.name=Your Karma is too high for this! It has failed.
+entitymessage.androidconflict.name=You had an Infusion that needed a biological body. It has been removed.
+entitymessage.cantuseritualblock.name=You do not have the right level of Karma to interact with this.
+entitymessage.multiblocknotformed.name=The Ritual structure is not yet in place.
 
 #Death Messages
 death.sun.name=was burnt to a crisp by the sun.

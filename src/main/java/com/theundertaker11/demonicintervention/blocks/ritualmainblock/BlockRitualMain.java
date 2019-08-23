@@ -1,8 +1,10 @@
 package com.theundertaker11.demonicintervention.blocks.ritualmainblock;
 
+import com.theundertaker11.demonicintervention.api.KarmaUtils;
 import com.theundertaker11.demonicintervention.blocks.ModelBlockBase;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -44,25 +47,37 @@ public class BlockRitualMain extends ModelBlockBase{
     }
 	
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		//if(worldIn.isRemote) return true;
-		TileEntity tEntity = worldIn.getTileEntity(pos);
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if(world.isRemote) return true;
+		TileEntity tEntity = world.getTileEntity(pos);
 		if(tEntity!=null&&tEntity instanceof TileRitualMain&&hand==EnumHand.MAIN_HAND)
 		{
 			TileRitualMain tile = (TileRitualMain)tEntity;
-			IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-			System.out.println("Tier: " + tile.getTier());
-			if(!playerIn.getHeldItemMainhand().isEmpty())
-			{
-				playerIn.setHeldItem(EnumHand.MAIN_HAND, inv.insertItem(0, playerIn.getHeldItemMainhand(), false));
+			tile.lastPlayer = player.getPersistentID();
+			int tier = tile.getTier();
+			if(tier == 0) {
+				player.sendMessage(new TextComponentString(I18n.format("entitymessage.multiblocknotformed.name")));
+				return true;
 			}
-			else
-			{
-				if(!inv.getStackInSlot(0).isEmpty())
+			if((tier > 0 && KarmaUtils.getKarma(player) >= 150) || (tier < 0 && KarmaUtils.getKarma(player) <= -150)) {
+				IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+				if(!player.getHeldItemMainhand().isEmpty())
 				{
-					playerIn.setHeldItem(EnumHand.MAIN_HAND, inv.extractItem(0, inv.getStackInSlot(0).getCount(), false));
+					player.setHeldItem(EnumHand.MAIN_HAND, inv.insertItem(0, player.getHeldItemMainhand(), false));
+					world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
 					tile.markDirty();
 				}
+				else
+				{
+					if(!inv.getStackInSlot(0).isEmpty())
+					{
+						player.setHeldItem(EnumHand.MAIN_HAND, inv.extractItem(0, inv.getStackInSlot(0).getCount(), false));
+						world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+						tile.markDirty();
+					}
+				}
+			}else {
+				player.sendMessage(new TextComponentString(I18n.format("entitymessage.cantuseritualblock.name")));
 			}
 		}
 		return true;

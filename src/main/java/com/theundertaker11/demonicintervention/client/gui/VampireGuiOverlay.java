@@ -2,7 +2,7 @@ package com.theundertaker11.demonicintervention.client.gui;
 
 import com.theundertaker11.demonicintervention.Reference;
 import com.theundertaker11.demonicintervention.api.infusion.InfusionUtils;
-import com.theundertaker11.demonicintervention.capability.extradata.IExtraData;
+import com.theundertaker11.demonicintervention.capability.vampiredata.IVampireData;
 import com.theundertaker11.demonicintervention.infusions.Infusions;
 
 import net.minecraft.client.Minecraft;
@@ -25,10 +25,10 @@ public class VampireGuiOverlay {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (event.getType() == ElementType.AIR) 
 		{
-			if(InfusionUtils.hasInfusion(Infusions.vampirism, mc.player) && InfusionUtils.getExtraData(mc.player) != null)
+			if(InfusionUtils.hasInfusion(Infusions.vampirism, mc.player) && InfusionUtils.getVampireData(mc.player) != null)
 			{
 				ScaledResolution scaled = event.getResolution();
-				IExtraData extraData = InfusionUtils.getExtraData(mc.player);
+				IVampireData extraData = InfusionUtils.getVampireData(mc.player);
 				ResourceLocation bloodbar  = new ResourceLocation(Reference.MODID, "textures/gui/blood_bar.png");
 				mc.getTextureManager().bindTexture(bloodbar);
 				int width = scaled.getScaledWidth()/2 + 91 - 11*8-2;

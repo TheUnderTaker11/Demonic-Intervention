@@ -14,20 +14,10 @@ public class MainEventHandler {
 
 	
 	private static boolean canRun = true;
-	public static int bloodCounter;
-	public static int twentyMinuteCounter;
 	//24000 is 20 minutes
 	@SubscribeEvent
 	public static void GameTick(TickEvent.ServerTickEvent event) {
 		if (canRun) {
-			bloodCounter++;
-			if(bloodCounter>=1200) {
-				bloodCounter = 0;
-			}
-			twentyMinuteCounter++;
-			if(twentyMinuteCounter>=2400) {
-				twentyMinuteCounter = 0;
-			}
 			if(!ModUtils.cooldowns.isEmpty()) {
 				for(int i=0; i < ModUtils.cooldowns.size(); i++) {
 					ModUtils.cooldowns.get(i).removeTick();

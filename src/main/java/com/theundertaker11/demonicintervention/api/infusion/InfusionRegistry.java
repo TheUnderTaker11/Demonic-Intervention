@@ -21,9 +21,9 @@ public class InfusionRegistry {
 	private static int nextid = 0;
 	public static void init()
 	{
-		registerInfusion(Infusions.vampirism);
-		registerInfusion(Infusions.noFallDamage);
-		registerInfusion(Infusions.vampireHunter);
+		registerInfusion(Infusions.vampirism, 0);
+		registerInfusion(Infusions.noFallDamage, 1);
+		registerInfusion(Infusions.vampireHunter, 2);
 	}
 	/**
 	 * To register an infusion, declare a static Infusion, then set that equal to this method with a new instantiation of your class
@@ -38,6 +38,15 @@ public class InfusionRegistry {
 	public static <T extends Infusion> T registerInfusion(T infusion)
 	{
 		infusion.setID(nextid++);
+		InfusionUtils.totalInfusionCount+=1;
+		infusionMap.put(infusion.getID(), infusion);
+		return infusion;
+	}
+	
+	private static <T extends Infusion> T registerInfusion(T infusion, int id)
+	{
+		infusion.setID(id);
+		nextid+=1;
 		InfusionUtils.totalInfusionCount+=1;
 		infusionMap.put(infusion.getID(), infusion);
 		return infusion;

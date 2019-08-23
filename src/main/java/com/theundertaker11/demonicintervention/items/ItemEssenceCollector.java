@@ -11,6 +11,7 @@ import com.theundertaker11.demonicintervention.util.NBTKeys;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -20,6 +21,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.common.UsernameCache;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -31,7 +34,44 @@ public class ItemEssenceCollector extends BaseItem{
 		this.setMaxStackSize(8);
 		this.setHasSubtypes(true);
 	}
+	
+	public static EntityPlayer getPlayerOffItem(ItemStack stack, World world) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if(world.isRemote || tag == null) return null;
+		EntityPlayer player = null;
+		try{
+			player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(UsernameCache.getLastKnownUsername(tag.getUniqueId(NBTKeys.TARGET_UUID)));
+		}catch(NullPointerException e) {}
+		return player;
+	}
 
+	public static EntityLivingBase getEntityLivingOffItem(ItemStack stack, World world) {
+		Entity ent = getEntityOffItem(stack, world);
+		if(ent instanceof EntityLivingBase)
+			return (EntityLivingBase)ent;
+		else return null;
+	}
+	
+	public static Entity getEntityOffItem(ItemStack stack, World world) {
+		NBTTagCompound tag = stack.getTagCompound();
+		if(world.isRemote || tag == null) return null;
+		Entity ent = null;
+		try{
+			ent = FMLCommonHandler.instance().getMinecraftServerInstance().getEntityFromUuid(tag.getUniqueId(NBTKeys.TARGET_UUID));
+		}catch(NullPointerException e) {}
+		if(ent == null) {
+			try{
+				ent = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(tag.getUniqueId(NBTKeys.TARGET_UUID));
+			}catch(NullPointerException e) {}
+		}
+		if(ent == null) {
+			try{
+				ent = world.getMinecraftServer().getEntityFromUuid(tag.getUniqueId(NBTKeys.TARGET_UUID));
+			}catch(NullPointerException e) {}
+		}
+		return ent;
+	}
+	
 	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)

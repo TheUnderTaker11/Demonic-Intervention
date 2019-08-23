@@ -20,4 +20,9 @@ public class TilePedestal extends ItemStoringTileBase{
 	{
 		return itemStackHandler.getStackInSlot(0);
 	}
+	
+	public void setStoredStack(ItemStack stack) {
+		itemStackHandler.setStackInSlot(0, stack);
+		this.markDirty();
+	}
 }

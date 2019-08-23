@@ -28,7 +28,7 @@ public class SyncIsDaytime implements IMessage {
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeBoolean(InfusionUtils.getExtraData(player).isDaytime());
+		buf.writeBoolean(InfusionUtils.getVampireData(player).isDaytime());
 	}
 
 	public static class Handler implements IMessageHandler<SyncIsDaytime, IMessage> {
@@ -37,9 +37,9 @@ public class SyncIsDaytime implements IMessage {
 		public IMessage onMessage(final SyncIsDaytime message, final MessageContext ctx) {
 			
 			EntityPlayerSP clientPlayer = Minecraft.getMinecraft().player;
-			if(InfusionUtils.getExtraData(clientPlayer) != null)
+			if(InfusionUtils.getVampireData(clientPlayer) != null)
 			{
-				InfusionUtils.getExtraData(clientPlayer).setIsDaytime(message.isDaytime);
+				InfusionUtils.getVampireData(clientPlayer).setIsDaytime(message.isDaytime);
 			}
 			return null;
 		}

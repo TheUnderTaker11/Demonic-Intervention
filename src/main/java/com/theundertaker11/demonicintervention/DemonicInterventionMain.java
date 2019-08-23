@@ -2,12 +2,12 @@ package com.theundertaker11.demonicintervention;
 
 import com.theundertaker11.demonicintervention.api.infusion.InfusionRegistry;
 import com.theundertaker11.demonicintervention.capability.CapabilityHandler;
+import com.theundertaker11.demonicintervention.crafting.RecipeRegistry;
 import com.theundertaker11.demonicintervention.event.EventRegistry;
 import com.theundertaker11.demonicintervention.init.BlockRegistry;
 import com.theundertaker11.demonicintervention.init.DIConfig;
 import com.theundertaker11.demonicintervention.init.ItemRegistry;
 import com.theundertaker11.demonicintervention.init.PacketRegistry;
-import com.theundertaker11.demonicintervention.init.RecipeRegistry;
 import com.theundertaker11.demonicintervention.init.TileEntityRegistry;
 import com.theundertaker11.demonicintervention.proxy.CommonProxy;
 import com.theundertaker11.demonicintervention.worldgen.FlowerGen;
@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = Reference.MODID, version = Reference.VERSION)
+@Mod(modid = Reference.MODID, version = Reference.VERSION, dependencies = "after:matteroverdrive")
 public class DemonicInterventionMain
 {
 	public static final CreativeTabs DICreativeTab = new DICreativeTab(CreativeTabs.getNextID(), "DICreativeTab");
